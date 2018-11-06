@@ -19,7 +19,7 @@ if info["data"] != []:
     fail = base64.b64decode(fail)
     print(fail)
     fail = gzip.decompress(fail)
-    with open("sub.txt", "wb") as fp:
+    with open("sub.srt", "wb") as fp:
         fp.write(fail)
 
     #os.rename("sub.txt", "sub.srt")
