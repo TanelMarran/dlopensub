@@ -4,7 +4,7 @@ import gzip
 import struct
 import os
 
-def hashFile(name):
+def hashFile(name): ##source: http://trac.opensubtitles.org/projects/opensubtitles/wiki/HashSourceCodes?fbclid=IwAR3e4Qsusy0--Jkd8jnMsvYk_wFtAcsItec-Vyf4QXxFiLWoFcNmGpfOpzs#Python
     try:
 
         longlongformat = 'q'  # long long
