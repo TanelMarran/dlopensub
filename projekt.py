@@ -41,6 +41,41 @@ def hashFile(name): ##source: http://trac.opensubtitles.org/projects/opensubtitl
     except(IOError):
         return "IOError"
 
+def muuda():
+    global fileDir
+    fileDir = filedialog.askopenfilename()
+    global label
+    label.config(text=fileDir)
+
+def tõmba():
+    #Otsi filmi faili järgi ning salvesta selle info
+    mhash = hashFile(fileDir)
+    info = server.SearchSubtitles(token, [{"sublanguageid":"eng", "moviehash": mhash}])
+    #Faili nime saame kätte
+    subDir = fileDir
+    subDir = subDir.split("/")
+    subName = subDir[-1]
+    while subName[-1] != ".":
+        subName = subName.replace(subName[-1], "")
+    del subDir[-1]
+    subDir = "/".join(subDir)
+    subDir = os.path.join(subDir, subName+"srt")
+
+
+    #Kui infot leidus, võta otsingust esimene leid ning tõmba subtiitrid
+    global label2
+
+    if info["data"] != []:
+        fail = server.DownloadSubtitles(token,[info["data"][0]["IDSubtitleFile"]])
+        fail = fail["data"][0]["data"]
+        fail = base64.b64decode(fail)
+        fail = gzip.decompress(fail)
+        with open(subDir, "wb") as fp:
+            fp.write(fail)
+        label2.config(text="Subtiitrid tõmmatud!")
+    else:
+        label2.config(text="Subtiitreid ei leitud.")
+
 #Ühenda serveriga
 server = xmlrpc.client.ServerProxy("http://api.opensubtitles.org/xml-rpc")
 
@@ -51,30 +86,16 @@ token = log["token"]
 
 #tkinter file dialog
 root = tk.Tk()
-root.withdraw()
-#Otsi filmi nime järgi ning salvesta selle info
-fileDir = filedialog.askopenfilename()
-mhash = hashFile(fileDir)
-info = server.SearchSubtitles(token, [{"sublanguageid":"eng", "moviehash": mhash}])
-#Faili nime saame kätte
-subDir = ""
-subDir = fileDir
-subDir = subDir.split("/")
-subName = subDir[-1]
-while subName[-1] != ".":
-    subName = subName.replace(subName[-1], "")
-del subDir[-1]
-subDir = "/".join(subDir)
-subDir = os.path.join(subDir, subName+"srt")
-
-
-#Kui infot leidus, võta otsingust esimene leid ning tõmba subtiitrid
-if info["data"] != []:
-    fail = server.DownloadSubtitles(token,[info["data"][0]["IDSubtitleFile"]])
-    fail = fail["data"][0]["data"]
-    fail = base64.b64decode(fail)
-    fail = gzip.decompress(fail)
-    with open(subDir, "wb") as fp:
-        fp.write(fail)
+root.title("Subtiitrid tõmmatud OpenSubtitles'iga")
+fileDir = ""
+label = tk.Label(root,text=fileDir)
+button = tk.Button(root,text="Ava",command=muuda)
+button2 = tk.Button(root,text="Tõmba subtiitrid",command=tõmba)
+label2 = tk.Label(root,text="")
+label.pack()
+button.pack()
+button2.pack()
+label2.pack()
+root.mainloop()
 
 
