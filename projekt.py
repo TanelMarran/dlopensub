@@ -73,8 +73,10 @@ def tõmba():
         with open(subDir, "wb") as fp:
             fp.write(fail)
         label2.config(text="Subtiitrid tõmmatud!")
+        label2.place(relx = 0.5, rely = 0.6, anchor = tk.CENTER)
     else:
         label2.config(text="Subtiitreid ei leitud.")
+        label2.place(relx = 0.5, rely = 0.6, anchor = tk.CENTER)
 
 #Ühenda serveriga
 server = xmlrpc.client.ServerProxy("http://api.opensubtitles.org/xml-rpc")
@@ -86,16 +88,21 @@ token = log["token"]
 
 #tkinter file dialog
 root = tk.Tk()
+root.resizable(False, False)
+root.geometry("600x400")
 root.title("Subtiitrid tõmmatud OpenSubtitles'iga")
 fileDir = ""
 label = tk.Label(root,text=fileDir)
-button = tk.Button(root,text="Ava",command=muuda)
-button2 = tk.Button(root,text="Tõmba subtiitrid",command=tõmba)
+button = tk.Button(root,text="Ava",command=muuda, height = 2, width = 20, bg = "yellow")
+button2 = tk.Button(root,text="Tõmba subtiitrid",command=tõmba, height = 2, width = 20, bg = "light green")
 label2 = tk.Label(root,text="")
 label.pack()
 button.pack()
 button2.pack()
 label2.pack()
+button.place(relx = 0.5, rely = 0.40, anchor = tk.CENTER)
+button2.place(relx=0.5, rely=0.50, anchor=tk.CENTER)
+label.place(relx = 0.5, rely = 0.30, anchor = tk.CENTER)
 root.mainloop()
 
 
