@@ -42,17 +42,20 @@ def hashFile(name): ##source: http://trac.opensubtitles.org/projects/opensubtitl
         return "IOError"
 
 def muuda():
-    global fileDir
-    fileDir = filedialog.askopenfilename()
-    global label
-    label.config(text=fileDir)
+    global entry
+    entry.delete(0,"end")
+    entry.insert(0,filedialog.askopenfilename())
+    #global fileDir
+    #fileDir = filedialog.askopenfilename()
+    #global label
+    #label.config(text=fileDir)
 
 def tõmba():
     #Otsi filmi faili järgi ning salvesta selle info
-    mhash = hashFile(fileDir)
+    mhash = hashFile(entry.get())
     info = server.SearchSubtitles(token, [{"sublanguageid":"eng", "moviehash": mhash}])
     #Faili nime saame kätte
-    subDir = fileDir
+    subDir = entry.get()
     subDir = subDir.split("/")
     subName = subDir[-1]
     while subName[-1] != ".":
@@ -93,17 +96,20 @@ root.geometry("600x400")
 root.configure(background = "white")
 root.title("Subtiitrid tõmmatud OpenSubtitles'iga")
 fileDir = ""
-label = tk.Label(root,text=fileDir, background = "white")
+entry = tk.Entry(root,width=60)
+#label = tk.Label(root,text=fileDir, background = "white")
 button = tk.Button(root,text="Ava",command=muuda, height = 3, width = 30)
 button2 = tk.Button(root,text="Tõmba subtiitrid",command=tõmba, height = 3, width = 30)
 label2 = tk.Label(root,text="", background = "white")
-label.pack()
+entry.pack()
+#label.pack()
 button.pack()
 button2.pack()
 label2.pack()
+entry.place(relx = 0.5, rely = 0.23, anchor = tk.CENTER)
 button.place(relx = 0.5, rely = 0.38, anchor = tk.CENTER)
 button2.place(relx=0.5, rely=0.53, anchor=tk.CENTER)
-label.place(relx = 0.5, rely = 0.25, anchor = tk.CENTER)
+#label.place(relx = 0.5, rely = 0.25, anchor = tk.CENTER)
 root.mainloop()
 
 
