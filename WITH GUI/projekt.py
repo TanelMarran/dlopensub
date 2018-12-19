@@ -45,6 +45,7 @@ def muuda():
     global entry
     entry.delete(0,"end")
     entry.insert(0,filedialog.askopenfilename())
+    button2.config(state="disabled")
     if entry.get() != "":
         uuri()
     #global fileDir
@@ -118,6 +119,9 @@ def uuri():
         for i in info["data"]:
             listbox.insert("end", i["SubFileName"])
 
+def onselect(evt):
+    global button2
+    button2.config(state="active")
 
 
 #Ühenda serveriga
@@ -127,6 +131,8 @@ server = xmlrpc.client.ServerProxy("http://api.opensubtitles.org/xml-rpc")
 useragent = "utopensub"
 log = server.LogIn("","","en",useragent)
 token = log["token"]
+
+
 
 #tkinter file dialog
 root = tk.Tk()
@@ -138,9 +144,10 @@ fileDir = ""
 entry = tk.Entry(root,width=60)
 #label = tk.Label(root,text=fileDir, background = "white")
 button = tk.Button(root,text="Ava",command=muuda, height = 3, width = 30)
-button2 = tk.Button(root,text="Tõmba subtiitrid",command=tõmba, height = 3, width = 30)
+button2 = tk.Button(root,text="Tõmba subtiitrid", state="disabled",command=tõmba, height = 3, width = 30)
 label2 = tk.Label(root,text="", background = "white")
 listbox = tk.Listbox(root)
+listbox.bind('<<ListboxSelect>>',onselect)
 entry.pack()
 #label.pack()
 button.pack()
